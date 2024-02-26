@@ -27,6 +27,7 @@ import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -200,6 +201,23 @@ public class IdentifierPanel {
 				var mapping = this.gui.getController().getProject().getRemapper().getMapping(this.entry);
 				th.addStringRow(I18n.translate("dev.source_plugin"), mapping.sourcePluginId());
 			}
+
+			if (this.entry instanceof ClassEntry ce) {
+				this.addExtraProperties(th, this.gui.getController().getExtraDescriptionProvider()
+						.getClassProperties(ce.getFullName()));
+			} else if (this.entry instanceof FieldEntry fe) {
+				this.addExtraProperties(th, this.gui.getController().getExtraDescriptionProvider()
+						.getFieldProperties(fe.getParent().getFullName(), fe.getName(), fe.getDesc().toString()));
+			} else if (this.entry instanceof MethodEntry me) {
+				this.addExtraProperties(th, this.gui.getController().getExtraDescriptionProvider()
+						.getMethodProperties(me.getParent().getFullName(), me.getName(), me.getDesc().toString()));
+			} else if (this.entry instanceof LocalVariableEntry lve) {
+				if (lve.isArgument()) {
+					this.addExtraProperties(th, this.gui.getController().getExtraDescriptionProvider()
+							.getArgumentProperties(lve.getParent().getParent().getFullName(), lve.getParent().getName(),
+							lve.getParent().getDesc().toString(), lve.getName()));
+				}
+			}
 		}
 
 		th.end();
@@ -241,6 +259,12 @@ public class IdentifierPanel {
 
 		this.ui.validate();
 		this.ui.repaint();
+	}
+
+	private void addExtraProperties(TableHelper th, Map<String, String> classProperties) {
+		for (Map.Entry<String, String> e : classProperties.entrySet()) {
+			th.addCopiableStringRow(e.getKey(), e.getValue());
+		}
 	}
 
 	private void doRename(String newName) {

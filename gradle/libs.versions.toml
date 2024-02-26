@@ -9,6 +9,7 @@ flatlaf = "3.2.5"
 syntaxpain = "0.1.2"
 swing_dpi = "0.10"
 fontchooser = "2.5.2"
+mappingio = "0.5.1"
 tinylog = "2.6.2"
 quilt_config = "1.2.0"
 
@@ -42,6 +43,7 @@ flatlaf_extras = { module = "com.formdev:flatlaf-extras", version.ref = "flatlaf
 syntaxpain = { module = "org.quiltmc:syntaxpain", version.ref = "syntaxpain" }
 swing_dpi = { module = "com.github.lukeu:swing-dpi", version.ref = "swing_dpi" }
 fontchooser = { module = "org.drjekyll:fontchooser", version.ref = "fontchooser" }
+mappingio = { module = "net.fabricmc:mapping-io", version.ref = "mappingio" }
 
 vineflower = { module = "org.vineflower:vineflower", version.ref = "vineflower" }
 cfr = { module = "net.fabricmc:cfr", version.ref = "cfr" }

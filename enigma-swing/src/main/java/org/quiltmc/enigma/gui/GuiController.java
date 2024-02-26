@@ -12,6 +12,8 @@ import org.quiltmc.enigma.api.analysis.tree.ClassInheritanceTreeNode;
 import org.quiltmc.enigma.api.analysis.tree.ClassReferenceTreeNode;
 import org.quiltmc.enigma.api.analysis.EntryReference;
 import org.quiltmc.enigma.api.analysis.tree.FieldReferenceTreeNode;
+import org.quiltmc.enigma.gui.legacymodding.LegacyMappingsDescriptionProvider;
+import org.quiltmc.enigma.gui.legacymodding.LegacyModdingExtensions;
 import org.quiltmc.enigma.gui.network.IntegratedEnigmaClient;
 import org.quiltmc.enigma.impl.analysis.IndexTreeBuilder;
 import org.quiltmc.enigma.api.analysis.tree.MethodImplementationsTreeNode;
@@ -96,6 +98,8 @@ public class GuiController implements ClientPacketHandler {
 	private IndexTreeBuilder indexTreeBuilder;
 	private StatsGenerator statsGenerator;
 
+	private DescriptionProvider extraDescriptionProvider = new DescriptionProvider(){};
+
 	private Path loadedMappingPath;
 	private MappingFormat loadedMappingFormat;
 
@@ -113,6 +117,10 @@ public class GuiController implements ClientPacketHandler {
 		this.enigma = Enigma.builder()
 				.setProfile(profile)
 				.build();
+
+		if (LegacyModdingExtensions.isEnabled()) {
+			this.extraDescriptionProvider = new LegacyMappingsDescriptionProvider();
+		}
 	}
 
 	public boolean isDirty() {
@@ -160,6 +168,8 @@ public class GuiController implements ClientPacketHandler {
 			try {
 				EntryTree<EntryMapping> mappings = format.read(path);
 				this.project.setMappings(mappings, progress);
+
+				this.extraDescriptionProvider.setMappings(path);
 
 				this.loadedMappingFormat = format;
 				this.loadedMappingPath = path;
@@ -605,6 +615,10 @@ public class GuiController implements ClientPacketHandler {
 
 	public StatsGenerator getStatsGenerator() {
 		return this.statsGenerator;
+	}
+
+	public DescriptionProvider getExtraDescriptionProvider() {
+		return this.extraDescriptionProvider;
 	}
 
 	public void createClient(String username, String ip, int port, char[] password) throws IOException {
